@@ -15,12 +15,12 @@ import {
 import { Line } from "react-chartjs-2";
 
 function App() {
-  const [youtubeLink, setYoutubeLink] = useState("");
+  const [videoLink, setVideoLink] = useState("");
   const [validRawChat, setValidRawChat] = useState([]);
   const [chatFrequency, setChatFrequency] = useState([]);
 
   const onYoutubeLinkInputChange = (e) => {
-    setYoutubeLink(e.target.value);
+    setVideoLink(e.target.value);
   };
 
   const onYoutubeLinkInputButtonClick = () => {
@@ -41,8 +41,20 @@ function App() {
   ) => {
     // let finalResult;
 
+    // https://shoppinglive.naver.com/replays/689216?fm=shoppinglive&sn=home
+
+    let videoIdRegExp = /\d{6,}/;
+
+    let isUrlValid = videoIdRegExp.test(videoLink);
+    if (!isUrlValid) {
+      alert("입력된 링크가 올바르지 않습니다.\n링크를 확인해주세요.");
+      return;
+    }
+
+    let videoId = videoIdRegExp.exec(videoLink)[0];
+
     //   const requestSize = 100;
-    const videoId = "676501"; //689216 681068 676501
+    // const videoId = "676501"; //689216 681068 676501
     const groupIntervalSec = 5;
     try {
       // https://apis.naver.com/live_commerce_web/viewer_api_web/v1/broadcast/681068?needTimeMachine=true
@@ -181,7 +193,7 @@ function App() {
         <input
           className="mainPageLinkInput"
           onChange={onYoutubeLinkInputChange}
-          value={youtubeLink}
+          value={videoLink}
           placeholder="유튜브 링크를 입력해주세요."
         />
         <button
