@@ -194,7 +194,7 @@ function App() {
           className="mainPageLinkInput"
           onChange={onYoutubeLinkInputChange}
           value={videoLink}
-          placeholder="유튜브 링크를 입력해주세요."
+          placeholder="네이버 라이브 쇼핑 링크를 입력해주세요."
         />
         <button
           className="mainPageLinkInputButton"
