@@ -105,7 +105,7 @@ function App() {
         console.log("validRawChat", validRawChat);
         setValidRawChat(validRawChat);
 
-        let chattingFrequencyData = { x: [], y: [], formattedX: [] };
+        let chattingFrequencyData = { x: [], y: [], formattedX: [] }; // x: interval sec, y: chat freq, formattedX: ex) 00:00:25
         for (
           let groupSec = 0;
           groupSec < durationSec;
