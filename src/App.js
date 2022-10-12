@@ -455,7 +455,7 @@ function App() {
                     <div>
                       {convertSecToHhmmssStr(chat.createdAtMilli / 1000)}
                     </div>
-                    {/* <div>{chat.nickname}</div> */}
+                    <div>{`(${chat.nickname}) : `}</div>
                     <div>{chat.message}</div>
                   </div>
                 );
