@@ -168,7 +168,7 @@ function App() {
       },
       title: {
         display: true,
-        text: "Chart.js Line Chart",
+        text: "네이버 쇼핑 라이브 채팅 정보",
       },
     },
   };
@@ -179,7 +179,7 @@ function App() {
     labels,
     datasets: [
       {
-        label: "Dataset 1",
+        label: "채팅 빈도",
         data: chatFrequency ? chatFrequency.y : [],
         borderColor: "rgb(255, 99, 132)",
         backgroundColor: "rgba(255, 99, 132, 0.5)",
@@ -209,9 +209,9 @@ function App() {
       <div className="chatBoxContainer">
         <div className="chatBox">
           {validRawChat
-            ? validRawChat.map((chat) => {
+            ? validRawChat.map((chat, idx) => {
                 return (
-                  <div className="chatLine">
+                  <div className="chatLine" key={`chatLink${idx}`}>
                     <div>
                       {convertSecToHhmmssStr(chat.createdAtMilli / 1000)}
                     </div>
