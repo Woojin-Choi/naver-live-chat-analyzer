@@ -1,0 +1,36 @@
+.App {
+  text-align: center;
+}
+
+.mainPageLinkInput {
+  width: 200px;
+}
+
+.mainPageLinkInputButton {
+  margin: 5px 0 0 20px;
+  /* width: 50px; */
+  height: 20px;
+}
+
+.chatBoxContainer {
+  display: flex;
+  justify-content: center;
+  border: 1px solid black;
+}
+
+.chatBox {
+  border: 1px solid black;
+  width: 600px;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  /* align-items: center; */
+  overflow-y: scroll;
+}
+
+.chatLine {
+  display: flex;
+  column-gap: 10px;
+  margin: 0 0 10px 0;
+  justify-content: flex-start;
+}
