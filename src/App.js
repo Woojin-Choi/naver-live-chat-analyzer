@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import "./App.css";
 import {
@@ -19,6 +19,19 @@ function App() {
   const [validRawChat, setValidRawChat] = useState([]);
   const [chatFrequency, setChatFrequency] = useState([]);
   const [frequentWordInfoArr, setFrequentWordInfoArr] = useState([]);
+  const [customKeyword, setCustoomKeyword] = useState("");
+  const [broadcastRaw, setBroadcastRaw] = useState({});
+  const [graphData, setGraphData] = useState({
+    labels: [],
+    datasets: [
+      {
+        label: "채팅 빈도",
+        data: [],
+        borderColor: "rgb(255, 99, 132)",
+        backgroundColor: "rgba(255, 99, 132, 0.5)",
+      },
+    ],
+  });
 
   // token frequency
   const KoreanFirstableConsonant =
@@ -43,6 +56,49 @@ function App() {
     getShoppingChatting(totalCommentNum, totalRawChat);
   };
 
+  const onKeywordInputChange = (e) => {
+    setCustoomKeyword(e.target.value);
+  };
+
+  const onKeywordInputButtonClick = () => {
+    const differenceTravel =
+      new Date(broadcastRaw.endDate).getTime() -
+      new Date(broadcastRaw.startDate).getTime();
+
+    const durationSec = Math.floor(differenceTravel / 1000);
+    const groupIntervalSec = 5;
+
+    let newY = [];
+    for (
+      let groupSec = 0;
+      groupSec < durationSec;
+      groupSec += groupIntervalSec
+    ) {
+      const thisRangeInfo = validRawChat.filter(
+        (chat) =>
+          groupSec < chat.createdAtMilli / 1000 &&
+          chat.createdAtMilli / 1000 < groupSec + groupIntervalSec &&
+          chat.message.includes(customKeyword)
+      );
+
+      newY.push(thisRangeInfo.length);
+    }
+
+    let newGraphData = {
+      labels: chatFrequency.formattedX,
+      datasets: [
+        {
+          label: "채팅 빈도",
+          data: newY,
+          borderColor: "rgb(255, 99, 132)",
+          backgroundColor: "rgba(255, 99, 132, 0.5)",
+        },
+      ],
+    };
+
+    setGraphData(newGraphData);
+  };
+
   const convertSecToHhmmssStr = (timeSec) => {
     return new Date(timeSec * 1000).toISOString().substr(11, 8);
   };
@@ -52,10 +108,6 @@ function App() {
     totalRawChat,
     lastCreatedAtMilli = 0
   ) => {
-    // let finalResult;
-
-    // https://shoppinglive.naver.com/replays/689216?fm=shoppinglive&sn=home
-
     let videoIdRegExp = /\d{6,}/;
 
     let isUrlValid = videoIdRegExp.test(videoLink);
@@ -66,25 +118,21 @@ function App() {
 
     let videoId = videoIdRegExp.exec(videoLink)[0];
 
-    //   const requestSize = 100;
-    // const videoId = "676501"; //689216 681068 676501
     const groupIntervalSec = 5;
     try {
-      // https://apis.naver.com/live_commerce_web/viewer_api_web/v1/broadcast/681068?needTimeMachine=true
       const broadcastRaw = await axios.get(
         `https://apis.naver.com/live_commerce_web/viewer_api_web/v1/broadcast/${videoId}`
       );
+
+      setBroadcastRaw(broadcastRaw.data);
 
       const broadcastEndDate = broadcastRaw.data.endDate;
       const differenceTravel =
         new Date(broadcastRaw.data.endDate).getTime() -
         new Date(broadcastRaw.data.startDate).getTime();
 
-      // console.log(broadcastRaw.data.startDate, broadcastRaw.data.endDate);
       const durationSec = Math.floor(differenceTravel / 1000);
-      // console.log(durationSec);
 
-      // https://apis.naver.com/live_commerce_web/viewer_api_web/v1/broadcast/689216/replays/comments?includeBeforeComment=true&lastCreatedAtMilli=3696001&size=100
       const res = await axios.get(
         `https://apis.naver.com/live_commerce_web/viewer_api_web/v1/broadcast/${videoId}/replays/comments`,
         {
@@ -95,7 +143,6 @@ function App() {
         }
       );
 
-      // console.log("res", res.data);
       totalCommentNum += res.data.comments.length;
       totalRawChat = totalRawChat.concat(res.data.comments);
       console.log(
@@ -109,7 +156,6 @@ function App() {
           res.data.lastCreatedAtMilli
         );
       } else {
-        //   console.log("totalRawChat", totalRawChat);
         console.log("totalCommentNum", totalCommentNum);
 
         const validRawChat = totalRawChat.filter(
@@ -147,23 +193,31 @@ function App() {
               groupSec < chat.createdAtMilli / 1000 &&
               chat.createdAtMilli / 1000 < groupSec + groupIntervalSec
           );
+
           chattingFrequencyData.x.push(groupSec);
           chattingFrequencyData.y.push(thisRangeInfo.length);
           chattingFrequencyData.formattedX.push(
             new Date(groupSec * 1000).toISOString().substr(11, 8)
           );
-
-          // chattingFrequencyData.push({
-          //   // timeStr: new Date(groupSec * 1000).toISOString().substr(11, 8),
-          //   x: groupSec,
-          //   y: thisRangeInfo.length,
-          // });
-
-          // console.log(groupSec, thisRangeInfo.length);
         }
 
         console.log("chattingFrequencyData", chattingFrequencyData);
+
         setChatFrequency(chattingFrequencyData);
+
+        let newGraphData = {
+          labels: chattingFrequencyData.formattedX,
+          datasets: [
+            {
+              label: "채팅 빈도",
+              data: chattingFrequencyData.y,
+              borderColor: "rgb(255, 99, 132)",
+              backgroundColor: "rgba(255, 99, 132, 0.5)",
+            },
+          ],
+        };
+
+        setGraphData(newGraphData);
 
         // const book = xlsx.utils.book_new();
 
@@ -413,20 +467,6 @@ function App() {
     },
   };
 
-  const labels = chatFrequency ? chatFrequency.formattedX : [];
-
-  const data = {
-    labels,
-    datasets: [
-      {
-        label: "채팅 빈도",
-        data: chatFrequency ? chatFrequency.y : [],
-        borderColor: "rgb(255, 99, 132)",
-        backgroundColor: "rgba(255, 99, 132, 0.5)",
-      },
-    ],
-  };
-
   return (
     <div className="App">
       <div>
@@ -444,7 +484,21 @@ function App() {
         </button>
       </div>
       <div style={{ height: "500px" }}>
-        <Line options={options} data={data} />
+        <Line options={options} data={graphData} />
+      </div>
+      <div>
+        <input
+          className="keywordInput"
+          onChange={onKeywordInputChange}
+          value={customKeyword}
+          placeholder="필터링 단어를 입력해주세요."
+        />
+        <button
+          className="keywordInputButton"
+          onClick={onKeywordInputButtonClick}
+        >
+          적용하기
+        </button>
       </div>
       <div className="bottomContainer">
         <div className="chatBox">

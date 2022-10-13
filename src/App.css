@@ -12,6 +12,16 @@
   height: 20px;
 }
 
+.keywordInput {
+  width: 200px;
+}
+
+.keywordInputButton {
+  margin: 5px 0 20px 20px;
+  /* width: 50px; */
+  height: 20px;
+}
+
 .bottomContainer {
   display: flex;
   justify-content: center;
