@@ -240,11 +240,11 @@ const convertSecToHhmmssStr = (timeSec) => {
   return new Date(timeSec * 1000).toISOString().substr(11, 8);
 };
 
-const ChatBox = React.memo(({ validRawChat }) => {
+const ChatBox = React.memo(({ chatBox }) => {
   return (
     <div className="chatBox">
-      {validRawChat
-        ? validRawChat.map((chat, idx) => {
+      {chatBox
+        ? chatBox.map((chat, idx) => {
             return (
               <div className="chatLine" key={`chatLink${idx}`}>
                 <div>{convertSecToHhmmssStr(chat.createdAtMilli / 1000)}</div>
@@ -278,6 +278,7 @@ function App() {
   const [frequentWordInfoArr, setFrequentWordInfoArr] = useState([]);
   const [customKeyword, setCustoomKeyword] = useState("");
   const [broadcastRaw, setBroadcastRaw] = useState({});
+  const [chatBox, setChatBox] = useState([]);
   const [graphData, setGraphData] = useState({
     labels: [],
     datasets: [
@@ -341,6 +342,9 @@ function App() {
       ],
     };
 
+    setChatBox(
+      validRawChat.filter((chat) => chat.message.includes(customKeyword))
+    );
     setGraphData(newGraphData);
   };
 
@@ -458,6 +462,7 @@ function App() {
           ],
         };
 
+        setChatBox(validRawChat);
         setGraphData(newGraphData);
 
         // const book = xlsx.utils.book_new();
@@ -472,6 +477,12 @@ function App() {
     } catch (err) {
       console.log(`Error occurs while getting raw chat info: ${err}`);
       console.log(err);
+    }
+  };
+
+  const onKeyPress = (e) => {
+    if (e.key === "Enter") {
+      onKeywordInputButtonClick();
     }
   };
 
@@ -504,7 +515,7 @@ function App() {
       <div style={{ height: "500px" }}>
         <ChattingGraph data={graphData} />
       </div>
-      <div>
+      <div onKeyPress={onKeyPress}>
         <input
           className="keywordInput"
           onChange={onKeywordInputChange}
@@ -519,7 +530,7 @@ function App() {
         </button>
       </div>
       <div className="bottomContainer">
-        <ChatBox validRawChat={validRawChat} />
+        <ChatBox chatBox={chatBox} />
         <FrequentWordBox frequentWordInfoArr={frequentWordInfoArr} />
       </div>
     </div>
