@@ -1,15 +1,15 @@
 {
   "files": {
     "main.css": "/naver-live-chat-analyzer/static/css/main.443e6561.css",
-    "main.js": "/naver-live-chat-analyzer/static/js/main.a3398724.js",
+    "main.js": "/naver-live-chat-analyzer/static/js/main.db59307f.js",
     "static/js/787.ab1a8aee.chunk.js": "/naver-live-chat-analyzer/static/js/787.ab1a8aee.chunk.js",
     "index.html": "/naver-live-chat-analyzer/index.html",
     "main.443e6561.css.map": "/naver-live-chat-analyzer/static/css/main.443e6561.css.map",
-    "main.a3398724.js.map": "/naver-live-chat-analyzer/static/js/main.a3398724.js.map",
+    "main.db59307f.js.map": "/naver-live-chat-analyzer/static/js/main.db59307f.js.map",
     "787.ab1a8aee.chunk.js.map": "/naver-live-chat-analyzer/static/js/787.ab1a8aee.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.443e6561.css",
-    "static/js/main.a3398724.js"
+    "static/js/main.db59307f.js"
   ]
 }
